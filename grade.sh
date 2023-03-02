@@ -6,22 +6,26 @@ echo 'Finished cloning'
 
 cd student-submission
 
-if[[ -f student-submission/ListExamples.java ]]
-then
-    echo "file submitted"
+if [[ -f ListExamples.java ]]
+    then
+        echo "file submitted"
 else
     echo "incorrect files submitted"
-    exit 
+    exit 1
 fi
 
-javac -cp $CPATH *.java
+cp ../TestListExamples.java ./
+javac ListExamples.java
 
-if[[$? -eq 0]]
-then 
-    echo "compile success"
-    java -cp .:lib/hamcrest-core-1.3.jar:lib/junit-4.13.2.jar org.junit.runner.JUnitCore TestListExamples
+if [[ $? -eq 0 ]]
+    then 
+        echo "compile success"
 else 
     echo "compile failure"
+    exit 1
 fi
-
-grep -c "error" output.txt
+cd ../
+javac -cp ".:lib/hamcrest-core-1.3.jar:lib/junit-4.13.2.jar" *.java
+java -cp ".:lib/hamcrest-core-1.3.jar:lib/junit-4.13.2.jar" org.junit.runner.JUnitCore TestListExamples > output.txt
+grep "Tests run:" output.txt > result.txt
+cat result.txt
